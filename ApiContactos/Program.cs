@@ -14,6 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 builder.Services.AddDbContext<ContactosContext>(opc =>
 {
     opc.UseSqlServer(builder.Configuration.GetConnectionString("ConexionDb"));
@@ -40,6 +41,14 @@ builder.Services.AddAuthentication(config =>
     };
 });
 
+builder.Services.AddCors(opc =>
+{
+    opc.AddPolicy("NewPolicy", app =>
+    {
+        app.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -49,6 +58,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("NewPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 
